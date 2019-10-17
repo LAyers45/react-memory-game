@@ -1,0 +1,14 @@
+nav.navbar.navbar-default {
+  margin-bottom: 0;
+}
+
+.navbar{
+  width: 100%;
+  text-align: left;
+  font-size: 3rem;
+  text-decoration: underline;
+  color: Orange;
+  margin-bottom: 50px;
+  background-color: black;
+}
+
