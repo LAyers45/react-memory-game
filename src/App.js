@@ -1,36 +1,82 @@
 import React, { Component } from "react";
 import HalloweenCard from "./components/HalloweenCard";
-import Wrapper from "./components/Wrapper";
-import monster from "./monster.json";
+import halloween from "./halloween.json";
 import Navbar from "./components/Navbar";
 
+
+function shuffleImage(randArray) {
+  for (let i = randArray.length - 1; i > 0; i--) {
+    const x = Math.floor(Math.random() * (i + 1));
+    [randArray[i], randArray[x]] = [randArray[x], randArray[i]]
+  }
+  return randArray;
+}
+
+
 class App extends Component {
-  // Setting this.state.monster to the monster json array
+  // Creating State elements 
   state = {
-    monster
+    score: 0,
+    highScore: 0,
+    halloween,
+    beenPushed: []
+
   };
 
-  removeFriend = id => {
-    // Filter this.state.monster for monster with an id not equal to the id being removed
-    const monster = this.state.monster.filter(friend => friend.id !== id);
-    // Set this.state.monster equal to the new monster array
-    this.setState({ monster });
-  };
+  clickPic = id => {
+    let beenPushed = this.state.beenPushed;
+    let score = this.state.score;
+    let highScore = this.state.highScore;
 
-  // Map over this.state.monster and render a FriendCard component for each friend object
+
+    if (beenPushed.indexOf(id) === -1) {
+      beenPushed.push(id);
+      //console.log(beenPushed)
+      //run game functions
+      this.handleIncrement();
+      this.startShuffle();
+    } else {
+      this.setState({
+        score: 0,
+        beenPushed: []
+      })
+    }
+    if (score > highScore) {
+      this.setState({
+        highScore: score
+      });
+    }
+  }
+
+  startShuffle = () => {
+    this.setState({
+      halloween: shuffleImage(halloween)
+    })
+  }
+
+  handleIncrement = () => {
+    this.setState({
+      score: this.state.score + 1
+    })
+  }
+  // Map halloween objects as well as calling items to page
   render() {
     return (
-      <Wrapper>
-        <Navbar />
-        {this.state.monster.map(friend => (
-          <HalloweenCard
-            id={friend.id}
-            key={friend.id}
-            name={friend.name}
-            image={friend.image}
-          />
-        ))}
-      </Wrapper>
+      <div className="container">
+        <Navbar
+          score={this.state.score}
+          highScore={this.state.highScore}
+        />
+        <div className="row">
+          {this.state.halloween.map(halloween => (
+            <HalloweenCard
+              id={halloween.id}
+              name={halloween.name}
+              image={halloween.image}
+              clickPic={this.clickPic} />
+          ))}
+        </div>
+      </div>
     );
   }
 }
